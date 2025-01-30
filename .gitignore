@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+.next/
+
+# Environment variables
+.env*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build output
+out/
+
+# IDE settings
+.vscode/
+.idea/
+.DS_Store
+
+# Misc
+package-lock.json
+yarn.lock

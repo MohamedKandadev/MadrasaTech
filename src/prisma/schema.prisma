@@ -1,0 +1,189 @@
+// This is your Prisma schema file
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+enum UserRole {
+    SUPER_ADMIN // Overall system administrator
+    ADMIN // Application administrator
+    TEACHER // Teacher/Professor
+    EMPLOYEE // General school employee
+    STUDENT // Student
+    PARENT // Parent/Guardian
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+    PENDING
+}
+
+model User {
+    id        String     @id @default(auto()) @map("_id") @db.ObjectId
+    email     String     @unique
+    password  String
+    firstName String
+    lastName  String
+    phone     String?
+    role      UserRole
+    image     String
+    status    UserStatus @default(PENDING)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    lastLogin DateTime?
+
+    // Role-specific relations
+    //   school        School?    @relation(fields: [schoolId], references: [id])
+    //   schoolId      String?    @db.ObjectId
+
+    //   // Teacher-specific fields
+    //   teacherProfile Teacher?
+
+    //   // Student-specific fields
+    //   studentProfile Student?
+
+    //   // Employee-specific fields
+    //   employeeProfile Employee?
+
+    //   // Parent-specific fields
+    //   parentProfile  Parent?
+}
+
+// model School {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   name          String
+//   address       String
+//   city          String
+//   region        String
+//   phone         String?
+//   email         String?
+//   principalName String?
+//   createdAt     DateTime  @default(now())
+//   updatedAt     DateTime  @updatedAt
+
+//   // Relations
+//   users         User[]
+//   classes       Class[]
+//   teachers      Teacher[]
+//   students      Student[]
+//   employees     Employee[]
+// }
+
+// model Teacher {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   user          User      @relation(fields: [userId], references: [id])
+//   userId        String    @unique @db.ObjectId
+//   school        School    @relation(fields: [schoolId], references: [id])
+//   schoolId      String    @db.ObjectId
+//   subjects      String[]  // Array of subject specialties
+//   hireDate      DateTime
+//   classes       Class[]   // Classes taught by the teacher
+// }
+
+// model Student {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   user          User      @relation(fields: [userId], references: [id])
+//   userId        String    @unique @db.ObjectId
+//   massarCode    String    @unique  // Unique Massar identifier
+//   dateOfBirth   DateTime
+//   gender        String
+//   school        School    @relation(fields: [schoolId], references: [id])
+//   schoolId      String    @db.ObjectId
+//   class         Class?    @relation(fields: [classId], references: [id])
+//   classId       String?   @db.ObjectId
+//   enrollmentDate DateTime
+//   parents       Parent[]
+//   grades        Grade[]
+//   attendance    Attendance[]
+// }
+
+// model Employee {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   user          User      @relation(fields: [userId], references: [id])
+//   userId        String    @unique @db.ObjectId
+//   school        School    @relation(fields: [schoolId], references: [id])
+//   schoolId      String    @db.ObjectId
+//   position      String
+//   department    String?
+//   hireDate      DateTime
+// }
+
+// model Parent {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   user          User      @relation(fields: [userId], references: [id])
+//   userId        String    @unique @db.ObjectId
+//   students      Student[]
+//   relationship  String    // Relationship to student (father, mother, guardian)
+// }
+
+// model Class {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   name          String
+//   gradeLevel    String
+//   academicYear  String
+//   school        School    @relation(fields: [schoolId], references: [id])
+//   schoolId      String    @db.ObjectId
+//   teacher       Teacher   @relation(fields: [teacherId], references: [id])
+//   teacherId     String    @db.ObjectId
+//   students      Student[]
+//   schedule      Schedule[]
+// }
+
+// model Subject {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   name          String
+//   gradeLevel    String
+//   coefficient   Float     // Subject weight in final grade
+//   schedules     Schedule[]
+//   grades        Grade[]
+// }
+
+// model Schedule {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   class         Class     @relation(fields: [classId], references: [id])
+//   classId       String    @db.ObjectId
+//   subject       Subject   @relation(fields: [subjectId], references: [id])
+//   subjectId     String    @db.ObjectId
+//   dayOfWeek     String
+//   startTime     DateTime
+//   endTime       DateTime
+//   roomNumber    String?
+// }
+
+// model Grade {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   student       Student   @relation(fields: [studentId], references: [id])
+//   studentId     String    @db.ObjectId
+//   subject       Subject   @relation(fields: [subjectId], references: [id])
+//   subjectId     String    @db.ObjectId
+//   semester      Int
+//   examType      String    // Continuous Assessment, Mid-term, Final
+//   grade         Float
+//   evaluationDate DateTime
+//   notes         String?
+// }
+
+// model Attendance {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   student       Student   @relation(fields: [studentId], references: [id])
+//   studentId     String    @db.ObjectId
+//   date          DateTime
+//   status        String    // Present, Absent, Late, Excused
+//   notes         String?
+// }
+
+// model Communication {
+//   id            String    @id @default(auto()) @map("_id") @db.ObjectId
+//   messageDate   DateTime  @default(now())
+//   messageType   String    // SMS, Email, System Notification
+//   content       String
+//   senderId     String    @db.ObjectId  // ID of the sender (teacher/admin)
+//   recipientId  String    @db.ObjectId  // ID of the recipient (usually parent/student)
+//   status       String    // Sent, Delivered, Read
+// }
