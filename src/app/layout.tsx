@@ -10,9 +10,8 @@ import { Header } from "@/components/Layouts/header";
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
 import type { PropsWithChildren } from "react";
-import { Providers } from "./providers";
 import NextAuthProvider from "./NextAuthProvider";
-import { getSession } from "./api/auth/[...nextauth]/route";
+import { StoreProvider, ThemeProvider } from "@/providers";
 
 export const metadata: Metadata = {
   description:
@@ -20,27 +19,25 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-  const session = await getSession()
+  // const session = await getSession();
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <Providers>
-          <NextAuthProvider>
-            <NextTopLoader showSpinner={false} />
+        <ThemeProvider>
+          <StoreProvider>
+            <NextAuthProvider>
+              <NextTopLoader showSpinner={false} />
 
-            <div className="flex min-h-screen">
-              {/* <Sidebar /> */}
-
-              <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
-                {/* <Header /> */}
-
-                <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden p-4 md:p-6 2xl:p-10">
-                  {children}
-                </main>
+              <div className="flex min-h-screen">
+                <div className="w-full bg-gray-2 dark:bg-[#020d1a]">
+                  <main className="isolate mx-auto w-full max-w-screen-2xl overflow-hidden">
+                    {children}
+                  </main>
+                </div>
               </div>
-            </div>
-          </NextAuthProvider>
-        </Providers>
+            </NextAuthProvider>
+          </StoreProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

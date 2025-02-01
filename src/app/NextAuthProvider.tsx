@@ -1,13 +1,10 @@
-"use client"
-import { SessionProvider } from "next-auth/react"
-import { ReactNode } from "react"
-import { getSession } from "./api/auth/[...nextauth]/route"
+"use client";
 
-const NextAuthProvider = async({ children }: { children: ReactNode }) => {
-    const session = await getSession()
-  return (
-    <SessionProvider session={session}>{children}</SessionProvider>
-  )
-}
+import { SessionProvider } from "next-auth/react";
+import { ReactNode } from "react";
 
-export default NextAuthProvider
+const NextAuthProvider = async ({ children }: { children: ReactNode }) => {
+  return <SessionProvider>{children}</SessionProvider>;
+};
+
+export default NextAuthProvider;

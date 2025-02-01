@@ -24,6 +24,22 @@ enum UserStatus {
     PENDING
 }
 
+model School {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    address   String
+    city      String
+    phone     String?
+    email     String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    isActive  Boolean  @default(false)
+    logo      String?
+
+    users User[]
+    admin Admin?
+}
+
 model User {
     id        String     @id @default(auto()) @map("_id") @db.ObjectId
     email     String     @unique
@@ -31,28 +47,43 @@ model User {
     firstName String
     lastName  String
     phone     String?
-    role      UserRole
+    role      UserRole   @default(EMPLOYEE)
     image     String
     status    UserStatus @default(PENDING)
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
     lastLogin DateTime?
+    token     String
 
-    // Role-specific relations
-    //   school        School?    @relation(fields: [schoolId], references: [id])
-    //   schoolId      String?    @db.ObjectId
+    school   School @relation(fields: [schoolId], references: [id])
+    schoolId String @db.ObjectId
 
-    //   // Teacher-specific fields
-    //   teacherProfile Teacher?
+    createdBy   User?   @relation("UserCreatedBy", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    createdById String? @db.ObjectId
 
-    //   // Student-specific fields
-    //   studentProfile Student?
+    createdUsers User[] @relation("UserCreatedBy")
+}
 
-    //   // Employee-specific fields
-    //   employeeProfile Employee?
+model Admin {
+    id        String     @id @default(auto()) @map("_id") @db.ObjectId
+    email     String     @unique
+    password  String
+    firstName String
+    lastName  String
+    phone     String?
+    status    UserStatus @default(PENDING)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    lastLogin DateTime?
+    token     String
 
-    //   // Parent-specific fields
-    //   parentProfile  Parent?
+    school   School @relation(fields: [schoolId], references: [id])
+    schoolId String @unique @db.ObjectId
+
+    createdBy   Admin?  @relation("AdminCreatedBy", fields: [createdById], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    createdById String? @db.ObjectId
+
+    createdAdmin Admin[] @relation("AdminCreatedBy")
 }
 
 // model School {
